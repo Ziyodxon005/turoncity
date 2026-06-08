@@ -104,7 +104,11 @@ export class SceneEnv {
     if (!this.streaming) this.addRoads(city);
 
     window.addEventListener('resize', this.onResize);
-    window.addEventListener('orientationchange', this.onResize);
+    window.addEventListener('orientationchange', this.onOrientationChange);
+    // screen.orientation API (modern browsers)
+    screen.orientation?.addEventListener?.('change', this.onOrientationChange);
+    // visualViewport fires on iOS when the keyboard or rotation happens
+    window.visualViewport?.addEventListener('resize', this.onResize);
   }
 
   private addStars(): void {
@@ -328,10 +332,23 @@ export class SceneEnv {
   }
 
   private onResize = (): void => {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    if (w === 0 || h === 0) return; // guard against transient zero sizes
+    this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.composer.setSize(window.innerWidth, window.innerHeight);
-    this.bloomPass.resolution.set(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(w, h);
+    this.composer.setSize(w, h);
+    this.bloomPass.resolution.set(w, h);
+  };
+
+  /** orientationchange fires before the browser has relaid; wait for it to settle. */
+  private onOrientationChange = (): void => {
+    // First pass — catches most cases.
+    this.onResize();
+    // Second pass after 300 ms — iOS/Android redraw completes by then.
+    setTimeout(() => this.onResize(), 300);
+    // Belt-and-suspenders: one more at 700 ms for slow devices.
+    setTimeout(() => this.onResize(), 700);
   };
 }
