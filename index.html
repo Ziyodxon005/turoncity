@@ -68,18 +68,26 @@
       font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     }
 
-    /* ── Portrait fallback: rotate the entire page to landscape on touch devices ── */
-    /* This fires instantly (before JS), so there's no flash of portrait layout.    */
+    /* ── Portrait: sahifani majburan landscape holatga o'girish ── */
     @media (orientation: portrait) and (pointer: coarse) {
+
+      html,
       body {
         transform: rotate(90deg);
         transform-origin: left top;
-        width: 100dvh !important;
-        height: 100dvw !important;
+        width: 100vh !important;
+        height: 100vw !important;
+        min-height: unset !important;
         position: fixed !important;
         top: 100%;
         left: 0;
-        overflow: hidden;
+        overflow: hidden !important;
+        background: #05060a;
+      }
+
+      #app {
+        width: 100vh !important;
+        height: 100vw !important;
       }
     }
   </style>
