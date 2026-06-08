@@ -68,39 +68,71 @@
       font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     }
 
-    /* ── Portrait: sahifani majburan landscape holatga o'girish ── */
-    @media (orientation: portrait) and (pointer: coarse) {
+    /* ── Portrait: "Ekranni buring" overlay ── */
+    #rotate-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #05060a;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      color: #fff;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    }
 
-      html,
-      body {
-        transform: rotate(90deg);
-        transform-origin: left top;
-        width: 100vh !important;
-        height: 100vw !important;
-        min-height: unset !important;
-        position: fixed !important;
-        top: 100vw;
-        left: 0;
-        overflow: hidden !important;
-        background: #05060a;
+    #rotate-overlay .rotate-icon {
+      font-size: clamp(48px, 15vw, 80px);
+      animation: rotatePhone 1.6s ease-in-out infinite;
+    }
+
+    #rotate-overlay .rotate-text {
+      font-size: clamp(14px, 4vw, 20px);
+      letter-spacing: 2px;
+      color: rgba(84, 160, 255, 0.9);
+      text-align: center;
+      padding: 0 24px;
+    }
+
+    @keyframes rotatePhone {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      40% {
+        transform: rotate(-90deg);
+      }
+
+      60% {
+        transform: rotate(-90deg);
+      }
+
+      100% {
+        transform: rotate(0deg);
+      }
+    }
+
+    @media (orientation: portrait) and (pointer: coarse) {
+      #rotate-overlay {
+        display: flex;
       }
 
       #app {
-        width: 100vh !important;
-        height: 100vw !important;
-        position: fixed !important;
-        inset: 0 !important;
-      }
-
-      canvas {
-        width: 100vh !important;
-        height: 100vw !important;
+        visibility: hidden;
       }
     }
   </style>
 </head>
 
 <body>
+  <div id="rotate-overlay">
+    <div class="rotate-icon">📱</div>
+    <div class="rotate-text">EKRANNI HORIZONTAL QILING</div>
+    <div class="rotate-text" style="font-size:clamp(11px,3vw,15px);opacity:0.55;margin-top:-12px;">O'yin faqat landscape
+      rejimda ishlaydi</div>
+  </div>
   <div id="app"></div>
   <script type="module" src="/src/main.ts"></script>
 </body>

@@ -60,10 +60,7 @@ export class SceneEnv {
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
-    // Portrait modeda CSS rotate qo'llaniladi — renderer landscape o'lchamda bo'lishi kerak
-    const initW = Math.max(window.innerWidth, window.innerHeight);
-    const initH = Math.min(window.innerWidth, window.innerHeight);
-    this.renderer.setSize(initW, initH);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -80,7 +77,7 @@ export class SceneEnv {
 
     this.camera = new THREE.PerspectiveCamera(
       62,
-      initW / initH,
+      window.innerWidth / window.innerHeight,
       0.5,
       city.extent * 1.5,
     );
@@ -88,7 +85,7 @@ export class SceneEnv {
 
     // ── Post-processing: Bloom ─────────────────────────────────────────────
     const renderPass = new RenderPass(this.scene, this.camera);
-    const resolution = new THREE.Vector2(initW, initH);
+    const resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
     this.bloomPass = new UnrealBloomPass(
       resolution,
       NIGHT.bloom.strength,
