@@ -1,3 +1,6 @@
+import { inject } from '@vercel/analytics';
+inject();
+
 import * as THREE from 'three';
 import { generateCity, DEFAULT_CITY, type City } from './world/City';
 import { StreamedWorld } from './world/StreamedWorld';

@@ -16,6 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "lucide": "^1.17.0",
     "simplex-noise": "^4.0.3",
     "three": "^0.160.0"
