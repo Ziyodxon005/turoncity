@@ -1,0 +1,10 @@
+{
+  "name": "TURON CITY",
+  "short_name": "TURON CITY",
+  "description": "TURON CITY — ochiq dunyo haydash o'yini.",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#05060a",
+  "theme_color": "#05060a",
+  "start_url": "."
+}
