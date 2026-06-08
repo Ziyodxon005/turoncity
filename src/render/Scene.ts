@@ -60,7 +60,10 @@ export class SceneEnv {
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    // Portrait modeda CSS rotate qo'llaniladi — renderer landscape o'lchamda bo'lishi kerak
+    const initW = Math.max(window.innerWidth, window.innerHeight);
+    const initH = Math.min(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(initW, initH);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -77,7 +80,7 @@ export class SceneEnv {
 
     this.camera = new THREE.PerspectiveCamera(
       62,
-      window.innerWidth / window.innerHeight,
+      initW / initH,
       0.5,
       city.extent * 1.5,
     );
@@ -85,7 +88,7 @@ export class SceneEnv {
 
     // ── Post-processing: Bloom ─────────────────────────────────────────────
     const renderPass = new RenderPass(this.scene, this.camera);
-    const resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
+    const resolution = new THREE.Vector2(initW, initH);
     this.bloomPass = new UnrealBloomPass(
       resolution,
       NIGHT.bloom.strength,
@@ -331,9 +334,23 @@ export class SceneEnv {
     this.composer.render();
   }
 
+  /**
+   * Portrait modeda CSS rotate(90deg) qo'llanilganda innerWidth < innerHeight bo'ladi.
+   * Lekin renderer doim landscape tartibda ishlashi kerak:
+   *   w = ekranning uzun tomoni, h = qisqa tomoni.
+   */
+  private viewportSize(): { w: number; h: number } {
+    const iw = window.innerWidth;
+    const ih = window.innerHeight;
+    // CSS portrait rotation aktiv bo'lganda vizual landscape
+    if (window.matchMedia('(orientation: portrait) and (pointer: coarse)').matches) {
+      return { w: Math.max(iw, ih), h: Math.min(iw, ih) };
+    }
+    return { w: iw, h: ih };
+  }
+
   private onResize = (): void => {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+    const { w, h } = this.viewportSize();
     if (w === 0 || h === 0) return; // guard against transient zero sizes
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();

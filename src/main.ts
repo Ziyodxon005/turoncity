@@ -920,11 +920,29 @@ function activateMobile(): void {
   });
 }
 
+/** Ekranni landscape (horizontal) rejimiga qulflash. Faqat user gesture ichida ishlaydi. */
+function lockLandscape(): void {
+  try {
+    const orient = screen.orientation as ScreenOrientation & { lock?: (o: string) => Promise<void> };
+    if (orient?.lock) {
+      orient.lock('landscape').catch(() => {
+        // Brauzer ruxsat bermasa jimgina o'tkazib yuboramiz
+      });
+    }
+  } catch {
+    // Eski brauzerlar uchun xato e'tiborsiz qoldiriladi
+  }
+}
+
 showSplash(container, () => {
   markGesture();
+  lockLandscape(); // splash yopilganda darhol lock qilish
   showPlatformSelect(container, (platform: Platform) => {
     if (platform === 'pc') activatePC();
-    else activateMobile();
+    else {
+      activateMobile();
+      lockLandscape(); // mobile tanlanganda yana bir bor ishonch uchun
+    }
     menu.openAs('title');
     loop.setPaused(true);
   });
