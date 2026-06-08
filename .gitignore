@@ -7,3 +7,5 @@ dist/
 /smoke.png
 # radio audio is hosted on a GitHub Release, not committed; manifest is public/radio.json
 /.radio-staging/
+
+.github/workflows/deploy.yml
